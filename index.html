@@ -1,311 +1,151 @@
 <!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ModArt — Mini Collection</title>
-  <meta name="description" content="Mini-collection fictive ModArt – site immersif statique (HTML/CSS/JS + <model-viewer>)" />
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Design system (ModArt-inspired) -->
-  <style>
-    :root{
-      --bg:#ffffff;
-      --ink:#0b0b0b; /* dense black */
-      --accent:#e50914; /* rouge net */
-      --muted:#b9bcc3;
-      --grid: 8px;
-      --radius: 0; /* coins bruts */
-      --font-sans: "Inter", "Neue Haas Grotesk", "Helvetica Neue", Arial, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-    }
+    <title>Wildrise</title>
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+  <body>
 
-    html, body{height:100%;}
-    html{scroll-behavior:smooth;}
-    body{
-      margin:0; background:var(--bg); color:var(--ink); font-family:var(--font-sans);
-      letter-spacing:0.01em; font-weight:300;
-    }
-    /* Typo fine & géométrique */
-    h1,h2,h3{font-weight:300; letter-spacing:0.02em; text-transform:uppercase;}
-    h1{font-size:clamp(22px,4vw,48px);} 
-    h2{font-size:clamp(18px,2.8vw,28px);} 
-    p{line-height:1.6; max-width:70ch;}
-    a{color:inherit; text-decoration:none}
-    a:focus-visible, button:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
-
-    /* Header — épuré, bandes noir/blanc, collapse on scroll */
-    .site-header{
-      position:fixed; inset:0 0 auto 0; height:72px; display:flex; align-items:center; z-index:50;
-      background:linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.66));
-      backdrop-filter:saturate(120%) blur(8px);
-      border-bottom:1px solid #111;
-      transition:transform .4s cubic-bezier(.2,.7,.2,1), height .3s ease;
-    }
-    .site-header.compact{height:48px;}
-    .site-header.hide{transform:translateY(-100%);} 
-    .wrap{width:min(1200px, 92vw); margin:0 auto; display:flex; align-items:center; gap:var(--grid);}
-    .brand{display:flex; align-items:baseline; gap:12px; font-weight:400;}
-    .brand .dot{width:10px; height:10px; background:var(--accent); display:inline-block;}
-    nav{margin-left:auto; display:flex; gap:24px;}
-    nav a{opacity:.88}
-    nav a[aria-current="page"], nav a:hover{opacity:1}
-
-    /* Section: Banner POV Catwalk */
-    section{position:relative;}
-    .banner{min-height:100svh; display:grid; place-items:center; overflow:hidden; border-bottom:4px solid var(--ink);} 
-    .banner-inner{position:relative; width:100%; height:100%;}
-    .hero-video{position:sticky; top:0; width:100%; height:100svh; display:grid; place-items:center;}
-    .hero-video .frame{position:relative; width:100vw; height:100svh; display:grid; place-items:center;}
-    .hero-video video{display:block; width:100%; height:100%; object-fit:cover;}
-    /* Scale container that shrinks with scroll */
-    .video-scale{position:absolute; inset:0; display:grid; place-items:center;}
-    .video-scale .video-shell{width:100vw; height:100svh; transform-origin:center center; will-change:transform; border:1px solid #111; box-shadow:0 12px 60px rgba(0,0,0,.2);} 
-
-    /* Horizontal glide container (reveals showroom) */
-    .h-glide{position:relative; width:200vw; height:100svh; display:flex;}
-    .pane{flex:0 0 100vw; height:100svh;}
-    .pane.banner-pane{background:transparent;}
-
-    /* Section: Showroom (vertical photo background) */
-    .showroom{position:relative; min-height:200svh; display:block; background:#000; color:#fff;}
-    .showroom .bg{
-      position:sticky; top:0; height:100svh; background-size:cover; background-position:center top; filter:grayscale(8%) contrast(105%);
-      border-top:4px solid var(--ink); border-bottom:4px solid var(--ink);
-    }
-    .showroom .overlay{position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.7) 70%, rgba(0,0,0,0.9)); pointer-events:none}
-
-    /* Hotspots for pieces */
-    .pieces{position:sticky; top:0; height:100svh; display:grid; place-items:center;}
-    .tags{position:absolute; inset:0;}
-    .tag{position:absolute; padding:8px 10px; background:#fff; color:#000; text-transform:uppercase; font-size:12px; border:1.5px solid #000; border-radius:var(--radius); transform:translate(-50%, -50%); cursor:pointer; box-shadow:4px 4px 0 #000;}
-    .tag:hover{background:var(--accent); color:#fff;}
-
-    /* Side Panel for 3D + description */
-    .panel{position:fixed; right:0; top:0; height:100svh; width:min(520px, 92vw); background:#fff; color:#000; border-left:2px solid #000; transform:translateX(100%); transition:transform .45s cubic-bezier(.2,.7,.2,1); z-index:60; display:flex; flex-direction:column;}
-    .panel.open{transform:translateX(0);} 
-    .panel header{display:flex; align-items:center; justify-content:space-between; padding:16px 16px; border-bottom:1px solid #111}
-    .panel header h3{margin:0; font-size:16px; letter-spacing:.08em}
-    .panel .content{padding:8px 16px 20px; overflow:auto;}
-    .panel .meta{font:12px/1.4 var(--font-mono); color:#444; margin-bottom:8px}
-    .panel .desc{font-size:14px}
-    .panel .cta{margin-top:16px; display:flex; gap:12px}
-    .btn{appearance:none; border:1.5px solid #000; background:#fff; color:#000; padding:10px 14px; text-transform:uppercase; font-size:12px; border-radius:var(--radius); box-shadow:4px 4px 0 #000; cursor:pointer}
-    .btn.primary{background:var(--ink); color:#fff}
-    .btn:hover{translate: -2px -2px}
-
-    /* Utility */
-    .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0}
-    .accent{color:var(--accent)}
-    .divider{height:1px; background:#111; opacity:.3; margin:16px 0}
-
-    /* Footer */
-    footer{padding:48px 0; border-top:1px solid #111; background:#fff; color:#000}
-    .footgrid{display:grid; grid-template-columns:1fr 1fr; gap:24px}
-    @media (max-width: 800px){.footgrid{grid-template-columns:1fr}}
-  </style>
-
-  <!-- Fonts (fine & geo) via system stack; optional Inter webfont could be added if allowed) -->
-  <link rel="preconnect" href="https://cdn.jsdelivr.net"/>
-  <link rel="preconnect" href="https://unpkg.com"/>
-
-  <!-- model-viewer web component -->
-  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-</head>
-
-<body>
-  <!-- Header -->
-  <header class="site-header" id="siteHeader" role="banner">
-    <div class="wrap">
-      <a class="brand" href="#top" aria-label="ModArt Mini-Collection">
-        <span class="dot" aria-hidden="true"></span>
-        <span>ModArt</span>
-        <span class="accent">/</span>
-        <span style="font-variant:all-small-caps; letter-spacing:.08em">Mini-collection</span>
-      </a>
-      <nav aria-label="Primaire">
-        <a href="#banner" aria-current="page">Défilé</a>
-        <a href="#showroom">Showroom</a>
-        <a href="#credits">Crédits</a>
-      </nav>
+    <!-- HERO SECTION -->
+    <section class="hero">
+      <div class="hero-content">
+        <h2>Sous-bois de l'âme</h2>
+      </div>
+      <div class="hero-links">
+  <a href="#concours" class="hero-link">
+ <img src="https://www.dropbox.com/scl/fi/mgkvs74er1r0akzdmytvo/ChatGPT-Image-16-sept.-2025-15_43_10.png?rlkey=8dpiswf2sxnxgdia5iplj5puh&st=m9lh46yk&raw=1" alt="Lien vers section 1" />
+    <div class="overlay">
+      <span>Jeu concours</span>
     </div>
-  </header>
+  </a>
+  <a href="#lookbook" class="hero-link">
+   <img src="https://www.dropbox.com/scl/fi/cxxswcwm72g74tkikcacg/ChatGPT-Image-16-sept.-2025-14_08_50.png?rlkey=fuyhq8bmv2ol4l1yxtb2cqdfd&st=dabw7at0&raw=1" alt="Lien vers section 2" />
+    <div class="overlay">
+      <span>Lookbook</span>
+    </div>
+  </a>
+</div>
 
-  <!-- Section Banner: POV Catwalk video -->
-  <main id="top">
-    <section class="banner" id="banner" aria-label="Défilé vidéo">
-      <div class="banner-inner">
-        <div class="hero-video">
-          <div class="frame">
-            <div class="video-scale" id="videoScale">
-              <div class="video-shell" id="videoShell">
-                <video id="catwalkVideo" src="C:\Users\desru\Downloads\replicate-prediction-53fq5hdpk1rm80csa7ev758028.mp4" playsinline muted preload="metadata"></video>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Horizontal glide: left pane is the video, right pane is spacer leading into showroom -->
-        <div class="h-glide" id="hGlide" aria-hidden="true">
-          <div class="pane banner-pane"></div>
-          <div class="pane" style="background:#fff"></div>
-        </div>
+<!-- SECTION JEU CONCOURS -->
+<section class="jeu" id="concours" aria-label="Jeu concours ModArt">
+  <!-- Pastille flottante (losange) -->
+ <button class="jeu-floating is-hidden" id="jeuFloating" aria-haspopup="dialog" aria-controls="jeuCard">
+  <span>Jeu</span>
+</button>
+
+  <!-- Overlay blanc floutant -->
+  <div class="jeu-overlay" id="jeuOverlay" aria-hidden="true"></div>
+
+  <!-- Carte concours -->
+  <div class="jeu-card" id="jeuCard" role="dialog" aria-modal="true" aria-labelledby="jeuTitle" aria-hidden="true">
+    <div class="jeu-card-head">
+      <h3 id="jeuTitle">Jeu Concours</h3>
+      <button class="close-card" id="closeCard" aria-label="Fermer">×</button>
+    </div>
+    <p class="jeu-card-desc">
+      Tente de remporter une pièce exclusive de la collection <strong>FW25</strong>.
+    </p>
+    <form id="jeuForm" class="jeu-form" novalidate>
+      <label for="jc_name">Nom Prénom</label>
+      <input type="text" id="jc_name" name="name" required>
+
+      <label for="jc_email">Email</label>
+      <input type="email" id="jc_email" name="email" required>
+
+      <label for="jc_pref">Ta pièce préférée de la FW25</label>
+      <input type="text" id="jc_pref" name="pref" required>
+
+      <button type="submit" class="jeu-submit">Je participe</button>
+    </form>
+  </div>
+</section>
+
+
+    </section>
+
+    <!-- VIDEO SEQUENCE -->
+<section class="vid">
+  <div class="sequence-wrapper">
+    <canvas id="sequence"></canvas>
+  </div>
+
+
+      <div class="story">
+        <div><h3>Sous-bois de l’âme,</h3></div>
+        <div><h3>Les courbes organique,</h3></div>
+        <div><h3>Là où le champignon surgit,</h3></div>
+        <div><h3>La mode fleurit.</h3></div>
       </div>
     </section>
 
-    <!-- Section Showroom -->
-    <section class="showroom" id="showroom" aria-label="Showroom des 4 pièces">
-      <div class="bg" id="showroomBg" style="background-image:url('assets/model-vertical.jpg')"></div>
-      <div class="overlay" aria-hidden="true"></div>
-      <div class="pieces">
-        <h2 class="sr-only">Pièces de la collection</h2>
-        <div class="tags" id="tags">
-          <!-- Position (x%, y%) à ajuster selon la photo -->
-          <button class="tag" style="left:52%; top:18%" data-piece='{"id":"piece1","name":"Veste structurelle","glb":"assets/p1.glb","usdz":"assets/p1.usdz","desc":"Veste tailleur en gabardine technique, épaules architecturées, lignes géométriques nettes.","meta":"Look 01 — 2025"}'>Veste</button>
-          <button class="tag" style="left:55%; top:45%" data-piece='{"id":"piece2","name":"Sac modulaire","glb":"assets/p2.glb","usdz":"assets/p2.usdz","desc":"Accessoire modulable multi-ports en cuir végétal, quincaillerie noir mat.","meta":"Look 02 — 2025"}'>Sac</button>
-          <button class="tag" style="left:50%; top:66%" data-piece='{"id":"piece3","name":"Pantalon angle droit","glb":"assets/p3.glb","usdz":"assets/p3.usdz","desc":"Coupe rectiligne, pinces à angle, chute nette. Tissu technique respirant.","meta":"Look 03 — 2025"}'>Pantalon</button>
-          <button class="tag" style="left:50%; top:86%" data-piece='{"id":"piece4","name":"Bottes monobloc","glb":"assets/p4.glb","usdz":"assets/p4.usdz","desc":"Tige haute moulée, semelle crantée, silhouette minimaliste.","meta":"Look 04 — 2025"}'>Bottes</button>
-        </div>
-      </div>
-    </section>
+<!-- LOOKBOOK -->
+<section class="lookbook" id="lookbook">
+<div class="lookbook-intro">
+  <h3>Lookbook</h3>
+  <p>
+    Découvre toutes les pièces de la collection. Clique sur un vêtement porté par le mannequin 
+    pour en savoir plus sur chaque détail.
+  </p>
 
-    <footer id="credits">
-      <div class="wrap footgrid">
-        <div>
-          <h3>ModArt — Mini-collection</h3>
-          <p>Projet fictif. Direction artistique épurée : blanc majoritaire, noir, détails rouges, coins bruts, typographies fines.</p>
-        </div>
-        <div>
-          <h3>Équipe</h3>
-          <p>3D : <strong>Nom du/ de la modeleur·se</strong><br/>Vidéo : <strong>Nom</strong><br/>UX/UI & Dév : <strong>Ton Nom</strong></p>
-        </div>
-      </div>
-    </footer>
-  </main>
+  <div class="lookbook-extra">
+    <blockquote>« La mode se vit dans le détail. »</blockquote>
+    <span class="season">Collection SBA26</span>
+  </div>
+</div>
 
-  <!-- Side panel for 3D model + desc -->
-  <aside class="panel" id="panel" aria-hidden="true" aria-label="Détail de la pièce">
-    <header>
-      <h3 id="panelTitle">Pièce</h3>
-      <button class="btn" id="closePanel" aria-label="Fermer">Fermer</button>
-    </header>
-    <div class="content">
-      <div class="meta" id="panelMeta"></div>
-      <!-- Model Viewer -->
-      <model-viewer id="mv" src="" ios-src="" alt="Aperçu 3D de la pièce" ar ar-modes="webxr scene-viewer quick-look" camera-controls auto-rotate shadow-intensity="1" style="width:100%; height:420px; background:#f6f6f6; border:1px solid #000"></model-viewer>
-      <div class="desc" id="panelDesc"></div>
-      <div class="cta">
-        <button class="btn primary" id="btnAR">Voir en AR</button>
-        <button class="btn" id="btnShare">Partager</button>
-      </div>
+
+<div class="lookbook-visual">
+  <img src="https://www.dropbox.com/scl/fi/sna36g4si4vhphdcw8sf6/ChatGPT-Image-16-sept.-2025-14_08_52.png?rlkey=pz087vu30dshhp40kk3pek4x7&st=0j183uyp&raw=1" 
+       alt="Mannequin portant la collection" 
+       class="lookbook-image" />
+
+  <!-- Hotspots placés avec % -->
+  <button class="hotspot" style="top:12%; left:50%;" data-item="Béret en laine"></button>
+  <button class="hotspot" style="top:30%; left:50%;" data-item="Haut plissé beige"></button>
+  <button class="hotspot" style="top:65%; left:50%;" data-item="Jupe en cuir marron"></button>
+</div>
+
+ <!-- Overlay blanc floutant -->
+  <div class="lookbook-overlay" id="lookbookOverlay"></div>
+
+
+  <!-- Panneau latéral -->
+  <aside class="lookbook-panel" id="lookbookPanel">
+    <div class="panel-content">
+      <button class="close-panel" id="closePanel">&times;</button>
+      <h4 id="panelTitle"></h4>
+      <p id="panelDescription"></p>
     </div>
   </aside>
+</section>
 
-  <!-- Interactions JS (perf-friendly, sans libs) -->
-  <script>
-  (function(){
-    const header = document.getElementById('siteHeader');
-    let lastY = window.scrollY; let ticking=false; let hidden=false;
-    function onScroll(){
-      const y = window.scrollY; const dy = y - lastY; lastY = y;
-      // Header collapse
-      header.classList.toggle('compact', y > 24);
-      // Hide on scroll down, show on up
-      if(dy > 6 && y > 120 && !hidden){ header.classList.add('hide'); hidden=true; }
-      else if(dy < -6 && hidden){ header.classList.remove('hide'); hidden=false; }
-      // Video scaling (from 100% to ~50%) and play/pause scrub effect
-      videoScale();
-      // Horizontal glide
-      glide();
-    }
 
-    const video = document.getElementById('catwalkVideo');
-    const videoShell = document.getElementById('videoShell');
-    const hGlide = document.getElementById('hGlide');
+<!-- INTRO -->
+<section class="intro">
+  <div class="intro-image">
+    <img src="https://www.dropbox.com/scl/fi/p56gxsfyecxawy9d36zrg/Images-Nos-Locaux-Lille-1.webp?rlkey=4wpa278vpq60zpi1vzvdl68mg&st=v0jasd7c&raw=1" alt="Image d'illustration" />
+  </div>
+  <div class="intro-text">
+    <p>
+      Chez Modart International, les étudiant·es sont au cœur de la création.
+Libres d’imaginer, d’expérimenter et de repousser les codes, ils donnent vie à des pièces uniques.
+Chaque défilé devient ainsi le reflet de leur talent, de leur vision et de leur audace. 
+    </p>
+    <p>
+      <a href="#" class="button">Découvrir le campus</a>
+    </p>
+  </div>
+</section>
 
-    // Auto play muted when visible
-    const io = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if(e.isIntersecting){ video.play().catch(()=>{}); }
-        else { video.pause(); }
-      })
-    }, {threshold: .2});
-    io.observe(video);
 
-    function videoScale(){
-      const rect = videoShell.getBoundingClientRect();
-      const vh = window.innerHeight;
-      // progress 0 at top, 1 when the bottom of sticky viewport reaches 60% of screen
-      const prog = Math.min(1, Math.max(0, (rect.top * -1) / (vh * 1.2)));
-      const scale = 1 - (prog * 0.5); // 1 -> 0.5
-      videoShell.style.transform = `scale(${scale.toFixed(3)})`;
-      // simple scroll-scrub: advance video currentTime proportionally (requires known duration)
-      if(video.duration){
-        const t = prog * (video.duration * 0.85);
-        if(Math.abs(video.currentTime - t) > .1){ video.currentTime = t; }
-      }
-    }
+    <footer></footer>
 
-    function glide(){
-      // When the video has shrunk enough, start moving horizontally to reveal showroom
-      const rect = videoShell.getBoundingClientRect();
-      const vh = window.innerHeight;
-      const start = -vh * 0.2; // start glide a bit before sticky ends
-      const end = vh * 0.8;
-      const offset = Math.min(1, Math.max(0, (rect.top - start) / (end - start)));
-      const x = (1 - offset) * -100; // 0 -> -100vw
-      hGlide.style.transform = `translateX(${x}vw)`;
-    }
-
-    document.addEventListener('scroll', ()=>{ if(!ticking){ window.requestAnimationFrame(()=>{ onScroll(); ticking=false; }); ticking=true; } }, {passive:true});
-    window.addEventListener('resize', ()=>{ videoScale(); glide(); }, {passive:true});
-
-    // Panel logic
-    const panel = document.getElementById('panel');
-    const panelTitle = document.getElementById('panelTitle');
-    const panelMeta = document.getElementById('panelMeta');
-    const panelDesc = document.getElementById('panelDesc');
-    const mv = document.getElementById('mv');
-
-    function openPanel(piece){
-      panelTitle.textContent = piece.name;
-      panelMeta.textContent = piece.meta || '';
-      panelDesc.textContent = piece.desc || '';
-      mv.src = piece.glb || '';
-      mv.setAttribute('ios-src', piece.usdz || '');
-      panel.classList.add('open');
-      panel.setAttribute('aria-hidden','false');
-      document.body.style.overflow='hidden';
-    }
-    function closePanel(){
-      panel.classList.remove('open');
-      panel.setAttribute('aria-hidden','true');
-      document.body.style.overflow='';
-      // pause model viewer auto-rotate by removing src (optional)
-      // mv.pause(); // (API experimental)
-    }
-
-    document.getElementById('closePanel').addEventListener('click', closePanel);
-    document.getElementById('btnShare').addEventListener('click', async ()=>{
-      try{
-        await navigator.share({title: panelTitle.textContent, url: location.href + '#showroom'});
-      }catch(e){ /* ignore */ }
-    });
-    document.getElementById('btnAR').addEventListener('click', ()=>{
-      // model-viewer AR is triggered by built-in button; this is a hint for users
-      mv.activateAR();
-    });
-
-    // Tags click
-    document.getElementById('tags').addEventListener('click', (e)=>{
-      const el = e.target.closest('.tag');
-      if(!el) return;
-      const piece = JSON.parse(el.getAttribute('data-piece'));
-      openPanel(piece);
-    });
-
-    // Init
-    video.addEventListener('loadedmetadata', ()=>{ videoScale(); });
-    video.setAttribute('poster', 'assets/catwalk-poster.jpg');
-  })();
-  </script>
-</body>
+    <!-- Lenis pour scroll smooth -->
+    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.27/bundled/lenis.min.js"></script>
+    <!-- Ton script principal -->
+    <script src="./js/main.js"></script>
+  </body>
 </html>
