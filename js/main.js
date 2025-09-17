@@ -128,18 +128,20 @@ closePanel.addEventListener("click", () => {
   const closeBtn = document.getElementById("closeCard");
   const form     = document.getElementById("jeuForm");
   const hero     = document.querySelector("section.hero");
+  const heroLinks = document.querySelectorAll(".hero-link");
 
-  // Variables pour le suivi Desktop
+  // Variables Desktop
   let targetX=0, targetY=0, currentX=0, currentY=0;
   const LAG=0.15, ARM_DELAY=0;
   let rafId=null, armTimer=null;
+  let hideForced = false; // <--- pour savoir si on cache à cause d'un hero-link
 
   const arm=()=>floating.classList.add("armed");
   const disarm=()=>floating.classList.remove("armed");
-  const show=()=>floating.classList.remove("is-hidden");
-  const hide=()=>{floating.classList.add("is-hidden");disarm();clearTimeout(armTimer);};
+  const show=()=>{ if (!hideForced) floating.classList.remove("is-hidden"); };
+  const hide=()=>{ floating.classList.add("is-hidden"); disarm(); clearTimeout(armTimer); };
 
-  // --- Animation desktop ---
+  // Animation desktop
   function animate(){
     currentX+=(targetX-currentX)*LAG;
     currentY+=(targetY-currentY)*LAG;
@@ -158,7 +160,7 @@ closePanel.addEventListener("click", () => {
     if(!rafId) rafId=requestAnimationFrame(animate);
   }
 
-  // --- Carte ---
+  // Carte
   function openCard(){ 
     overlay.classList.add("active"); 
     card.classList.add("active"); 
@@ -167,8 +169,8 @@ closePanel.addEventListener("click", () => {
   function closeCard(){ 
     overlay.classList.remove("active"); 
     card.classList.remove("active"); 
-    if(!isMobile()) show(); // desktop → réaffiche si dans hero
-    if(isMobile()) show();  // mobile → bouton toujours visible
+    if(!isMobile()) show(); 
+    if(isMobile()) show();  
   }
   function submitForm(e){ 
     e.preventDefault(); 
@@ -182,17 +184,28 @@ closePanel.addEventListener("click", () => {
   closeBtn.addEventListener("click",closeCard);
   form.addEventListener("submit",submitForm);
 
-  // Initialisation
+  // Desktop
   if(!isMobile()){
-    // Desktop → suivi actif uniquement dans hero
     document.addEventListener("mousemove",onMouseMove);
     document.addEventListener("mouseleave",hide);
+
+    // Cache quand on passe sur un hero-link
+    heroLinks.forEach(link => {
+      link.addEventListener("mouseenter", () => {
+        hideForced = true;
+        hide();
+      });
+      link.addEventListener("mouseleave", () => {
+        hideForced = false;
+        show();
+      });
+    });
   } else {
-    // Mobile → FAB toujours visible
+    // Mobile : FAB toujours visible
     floating.classList.remove("is-hidden");
     floating.classList.add("armed");
   }
-
 })();
+
 
 
