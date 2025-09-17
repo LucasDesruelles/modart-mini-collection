@@ -3,8 +3,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
-    <title>Wildrise</title>
+
+
+    <title>ModArt</title>
     <link rel="stylesheet" href="./css/style.css" />
   </head>
   <body>
@@ -12,19 +16,19 @@
     <!-- HERO SECTION -->
     <section class="hero">
       <div class="hero-content">
-        <h2>Sous-bois de l'âme</h2>
+        <h2>SOUS BOIS DE L'ÂME</h2>
       </div>
       <div class="hero-links">
   <a href="#concours" class="hero-link">
  <img src="https://www.dropbox.com/scl/fi/mgkvs74er1r0akzdmytvo/ChatGPT-Image-16-sept.-2025-15_43_10.png?rlkey=8dpiswf2sxnxgdia5iplj5puh&st=m9lh46yk&raw=1" alt="Lien vers section 1" />
     <div class="overlay">
-      <span>Jeu concours</span>
+      <span>JEU CONCOURS</span>
     </div>
   </a>
   <a href="#lookbook" class="hero-link">
    <img src="https://www.dropbox.com/scl/fi/cxxswcwm72g74tkikcacg/ChatGPT-Image-16-sept.-2025-14_08_50.png?rlkey=fuyhq8bmv2ol4l1yxtb2cqdfd&st=dabw7at0&raw=1" alt="Lien vers section 2" />
     <div class="overlay">
-      <span>Lookbook</span>
+      <span>LOOKBOOK</span>
     </div>
   </a>
 </div>
@@ -66,6 +70,69 @@
 
     </section>
 
+    <section class="collection" id="collection">
+  <div class="collection-bg">26</div>
+  <div class="collection-container">
+    <div class="collection-title">
+      <h2>LA COLLECTION</h2>
+    </div>
+    <div class="collection-text card">
+      <p>
+        <span>Sous-bois de l’âme</span> est une collection inspirée des champignons, 
+        entre poésie naturelle et innovation durable.  
+      </p>
+      <p>
+        Les formes organiques rappellent les silhouettes forestières, 
+        les matières issues du mycélium réinventent le cuir.  
+      </p>
+      <p>
+        Une ode à la créativité vivante de la nature, 
+        où la mode éclot comme une pousse en clair-obscur.
+      </p>
+      <div class="collection-border"></div>
+    </div>
+  </div>
+</section>
+
+<section class="highlight-piece" id="highlight-piece">
+  <div class="highlight-container">
+    <!-- Colonne gauche : Image éditoriale -->
+    <div class="highlight-image">
+      <img src="https://www.dropbox.com/scl/fi/wcs2sgm5a92sihe45nskc/ChatGPT-Image-17-sept.-2025-16_35_26.png?rlkey=wch45nsbfo9x4uly5tt3u2uwu&st=wbifn7j3&raw=1" 
+           alt="Sac à main pièce phare">
+    </div>
+
+    <!-- Colonne droite : Model 3D -->
+    <div class="highlight-3d">
+      <model-viewer src="SAC_A_MAIN.glb"
+        ar
+        ar-modes="webxr scene-viewer quick-look"
+        camera-controls
+        tone-mapping="neutral"
+        poster="poster.webp"
+        shadow-intensity="1"
+        style="width:100%; height:500px;">
+        
+        <!-- Barre de chargement -->
+        <div class="progress-bar hide" slot="progress-bar">
+          <div class="update-bar"></div>
+        </div>
+
+        <!-- Bouton AR -->
+        <button slot="ar-button" id="ar-button">
+          View in your space
+        </button>
+
+        <!-- Prompt AR -->
+        <div id="ar-prompt">
+          <img src="https://modelviewer.dev/shared-assets/icons/hand.png" alt="AR prompt">
+        </div>
+      </model-viewer>
+    </div>
+  </div>
+</section>
+
+
     <!-- VIDEO SEQUENCE -->
 <section class="vid">
   <div class="sequence-wrapper">
@@ -75,9 +142,9 @@
 
       <div class="story">
         <div><h3>Sous-bois de l’âme,</h3></div>
-        <div><h3>Les courbes organique,</h3></div>
-        <div><h3>Là où le champignon surgit,</h3></div>
-        <div><h3>La mode fleurit.</h3></div>
+        <div><h3>Là où le mycelium surgit,</h3></div>
+        <div><h3>la symbiose est organique,</h3></div>
+        <div><h3>Et la mode fleurit.</h3></div>
       </div>
     </section>
 

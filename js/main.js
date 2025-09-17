@@ -92,31 +92,49 @@ requestAnimationFrame(raf);
 
 
 
-// --- Lookbook hotspots avec panneau ---
+// === Overlay Lookbook ===
 const hotspots = document.querySelectorAll(".hotspot");
 const panel = document.getElementById("lookbookPanel");
+const overlay = document.getElementById("lookbookOverlay");
+const closePanel = document.getElementById("closePanel");
 const panelTitle = document.getElementById("panelTitle");
 const panelDescription = document.getElementById("panelDescription");
-const closePanel = document.getElementById("closePanel");
 
+// Données exemple
 const itemsData = {
-  "Veste en cuir": "Veste en cuir véritable, coupe oversize, disponible en noir et camel.",
-  "Pantalon oversize": "Pantalon fluide en lin, parfait pour un style casual chic.",
-  "Bottes montantes": "Bottes en cuir avec semelle crantée, confort et style garantis."
+  "Béret en laine": "Béret en laine douce, disponible en noir et écru.",
+  "Haut plissé beige": "Top plissé en soie beige, coupe fluide et élégante.",
+  "Jupe en cuir marron": "Mini-jupe en cuir marron, taille haute et finition luxe."
 };
 
+// Ouvrir panneau + overlay
 hotspots.forEach(h => {
   h.addEventListener("click", () => {
     const item = h.dataset.item;
     panelTitle.textContent = item;
     panelDescription.textContent = itemsData[item] || "Description à venir.";
+    
     panel.classList.add("active");
+    overlay.classList.add("active");
   });
 });
 
-closePanel.addEventListener("click", () => {
+// Fermer panneau + overlay
+function closeLookbook() {
   panel.classList.remove("active");
+  overlay.classList.remove("active");
+}
+
+closePanel.addEventListener("click", closeLookbook);
+overlay.addEventListener("click", closeLookbook);
+
+// Optionnel : fermer avec la touche ESC
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && panel.classList.contains("active")) {
+    closeLookbook();
+  }
 });
+
 
 // === Jeu concours flottant (Desktop + Mobile) ===
 (() => {
@@ -206,6 +224,22 @@ closePanel.addEventListener("click", () => {
     floating.classList.add("armed");
   }
 })();
+
+
+
+
+// === Intersection Observer pour Collection ===
+const collectionSection = document.querySelector(".collection");
+if (collectionSection) {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        collectionSection.classList.add("in-view");
+      }
+    });
+  }, { threshold: 0.3 });
+  observer.observe(collectionSection);
+}
 
 
 
