@@ -50,6 +50,8 @@ for (let i = 0; i < frameCount; i++) {
   };
 }
 
+
+
 // Scroll logic
 window.addEventListener("scroll", () => {
   const vidSection = document.querySelector("section.vid");
@@ -76,6 +78,8 @@ window.addEventListener("scroll", () => {
 
 
 
+
+
 // Init Lenis pour scroll inertiel
 const lenis = new Lenis({
   duration: 1.2,
@@ -92,28 +96,51 @@ requestAnimationFrame(raf);
 
 
 
-// === Overlay Lookbook ===
+// === Lookbook Panel + Overlay + Model 3D ===
 const hotspots = document.querySelectorAll(".hotspot");
 const panel = document.getElementById("lookbookPanel");
-const overlay = document.getElementById("lookbookOverlay");
+const overlay = document.getElementById("lookbookOverlay"); // déjà créé auparavant
 const closePanel = document.getElementById("closePanel");
+
 const panelTitle = document.getElementById("panelTitle");
 const panelDescription = document.getElementById("panelDescription");
+const panelModel = document.getElementById("panelModel");
 
-// Données exemple
+// Même modèle pour chaque pièce (pour l’instant)
+const MODEL_URL = "https://c88w6athycyjuf8o.public.blob.vercel-storage.com/SAC%20A%CC%80%20MAIN.glb";
+
+// Données pièces (exemples en FR)
 const itemsData = {
-  "Béret en laine": "Béret en laine douce, disponible en noir et écru.",
-  "Haut plissé beige": "Top plissé en soie beige, coupe fluide et élégante.",
-  "Jupe en cuir marron": "Mini-jupe en cuir marron, taille haute et finition luxe."
+  "Béret en laine": {
+    desc: "Béret en laine mérinos, lignes nettes et finitions main. Pièce essentielle du vestiaire ModArt.",
+  },
+  "Haut plissé beige": {
+    desc: "Top plissé en soie végétale, volume graphique et texture aérienne. Élégance minimaliste.",
+  },
+  "Jupe en cuir marron": {
+    desc: "Jupe en cuir de champignon, taille haute, tombé structuré. Innovation durable, caractère éditorial.",
+  }
 };
 
-// Ouvrir panneau + overlay
+// Ouvrir le panneau
 hotspots.forEach(h => {
   h.addEventListener("click", () => {
     const item = h.dataset.item;
-    panelTitle.textContent = item;
-    panelDescription.textContent = itemsData[item] || "Description à venir.";
-    
+    const data = itemsData[item] || { desc: "Détails à venir." };
+
+    panelTitle.textContent = item || "Pièce";
+    panelDescription.textContent = data.desc;
+
+    // assigner / réassigner le modèle 3D
+    if (panelModel) {
+      // orientation initiale : on montre la face avant (ajuste au besoin)
+      panelModel.setAttribute("src", MODEL_URL);
+      panelModel.setAttribute("camera-orbit", "180deg auto auto");
+      panelModel.setAttribute("camera-target", "auto");
+      panelModel.setAttribute("shadow-intensity", "1");
+      panelModel.style.background = "transparent";
+    }
+
     panel.classList.add("active");
     overlay.classList.add("active");
   });
@@ -124,16 +151,37 @@ function closeLookbook() {
   panel.classList.remove("active");
   overlay.classList.remove("active");
 }
-
 closePanel.addEventListener("click", closeLookbook);
 overlay.addEventListener("click", closeLookbook);
-
-// Optionnel : fermer avec la touche ESC
 document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape" && panel.classList.contains("active")) {
-    closeLookbook();
-  }
+  if (e.key === "Escape" && panel.classList.contains("active")) closeLookbook();
 });
+
+// ===== Lookbook panel — micro interactions 3D stage =====
+(() => {
+  const wrap = document.getElementById('panelModelWrap');
+  const hint = wrap ? wrap.querySelector('.panel-hint') : null;
+  if (!wrap || !window.matchMedia('(pointer:fine)').matches) return;
+
+  let hideHintTimer;
+
+  const setSpot = (ev) => {
+    const r = wrap.getBoundingClientRect();
+    const x = ((ev.clientX - r.left) / r.width) * 100;
+    const y = ((ev.clientY - r.top)  / r.height) * 100;
+    wrap.style.setProperty('--mx', `${x}%`);
+    wrap.style.setProperty('--my', `${y}%`);
+    if (hint) {
+      hint.style.opacity = '0';
+      clearTimeout(hideHintTimer);
+      hideHintTimer = setTimeout(() => hint.remove(), 600);
+    }
+  };
+
+  wrap.addEventListener('mousemove', setSpot);
+  wrap.addEventListener('mouseenter', setSpot);
+})();
+
 
 
 // === Jeu concours flottant (Desktop + Mobile) ===
@@ -241,5 +289,65 @@ if (collectionSection) {
   observer.observe(collectionSection);
 }
 
+// ===== La pièce phare : reveal + tilt image + spotlight 3D =====
+(() => {
+  const section = document.querySelector(".highlight-piece");
+  if (!section) return;
+
+  // Reveal au scroll
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) section.classList.add("in-view");
+    });
+  }, { threshold: 0.25 });
+  io.observe(section);
+
+  // Tilt léger sur la photo
+  const tilt = section.querySelector(".tilt");
+  const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (tilt && !prefersReduced) {
+    const maxTilt = 6; // degrés
+    let raf;
+    function onMove(ev) {
+      const rect = tilt.getBoundingClientRect();
+      const x = (ev.clientX - rect.left) / rect.width;
+      const y = (ev.clientY - rect.top)  / rect.height;
+      const rx = (y - 0.5) * -maxTilt;
+      const ry = (x - 0.5) *  maxTilt;
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        tilt.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
+      });
+    }
+    function onLeave() {
+      cancelAnimationFrame(raf);
+      tilt.style.transform = `rotateX(0deg) rotateY(0deg)`;
+    }
+    tilt.addEventListener("mousemove", onMove);
+    tilt.addEventListener("mouseleave", onLeave);
+  }
+
+  // Spotlight doux sur la scène 3D (souris uniquement)
+  const stage = section.querySelector("#hpStage");
+  const hint  = section.querySelector("#hpHint");
+  if (stage && window.matchMedia("(pointer:fine)").matches) {
+    let hideHintTimer;
+    function setSpotlight(ev) {
+      const rect = stage.getBoundingClientRect();
+      const x = ((ev.clientX - rect.left) / rect.width) * 100;
+      const y = ((ev.clientY - rect.top)  / rect.height) * 100;
+      stage.style.setProperty("--mx", `${x}%`);
+      stage.style.setProperty("--my", `${y}%`);
+      // cacher l'indication après la première interaction
+      if (hint) {
+        hint.style.opacity = "0";
+        clearTimeout(hideHintTimer);
+        hideHintTimer = setTimeout(() => hint.remove(), 600);
+      }
+    }
+    stage.addEventListener("mousemove", setSpotlight);
+    stage.addEventListener("mouseenter", setSpotlight);
+  }
+})();
 
 

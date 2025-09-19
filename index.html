@@ -94,43 +94,7 @@
   </div>
 </section>
 
-<section class="highlight-piece" id="highlight-piece">
-  <div class="highlight-container">
-    <!-- Colonne gauche : Image éditoriale -->
-    <div class="highlight-image">
-      <img src="https://www.dropbox.com/scl/fi/wcs2sgm5a92sihe45nskc/ChatGPT-Image-17-sept.-2025-16_35_26.png?rlkey=wch45nsbfo9x4uly5tt3u2uwu&st=wbifn7j3&raw=1" 
-           alt="Sac à main pièce phare">
-    </div>
-
-    <!-- Colonne droite : Model 3D -->
-    <div class="highlight-3d">
-      <model-viewer src="SAC_A_MAIN.glb"
-        ar
-        ar-modes="webxr scene-viewer quick-look"
-        camera-controls
-        tone-mapping="neutral"
-        poster="poster.webp"
-        shadow-intensity="1"
-        style="width:100%; height:500px;">
-        
-        <!-- Barre de chargement -->
-        <div class="progress-bar hide" slot="progress-bar">
-          <div class="update-bar"></div>
-        </div>
-
-        <!-- Bouton AR -->
-        <button slot="ar-button" id="ar-button">
-          View in your space
-        </button>
-
-        <!-- Prompt AR -->
-        <div id="ar-prompt">
-          <img src="https://modelviewer.dev/shared-assets/icons/hand.png" alt="AR prompt">
-        </div>
-      </model-viewer>
-    </div>
-  </div>
-</section>
+<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
 
     <!-- VIDEO SEQUENCE -->
@@ -140,13 +104,57 @@
   </div>
 
 
-      <div class="story">
-        <div><h3>Sous-bois de l’âme,</h3></div>
-        <div><h3>Là où le mycelium surgit,</h3></div>
-        <div><h3>la symbiose est organique,</h3></div>
-        <div><h3>Et la mode fleurit.</h3></div>
-      </div>
+<div class="story">
+  <div class="line"><h3>Sous-bois <em>de l’âme</em>,</h3></div>
+  <div class="line"><h3>Là où le <em>mycélium</em> surgit,</h3></div>
+  <div class="line"><h3>La symbiose est <em>organique</em>,</h3></div>
+  <div class="line"><h3>Et la mode <em>fleurit</em>.</h3></div>
+</div>
+
     </section>
+
+    <!-- SECTION : La pièce phare -->
+<section class="highlight-piece" id="highlight-piece" aria-labelledby="hp-heading">
+  <div class="hp-bg" aria-hidden="true">26</div>
+
+  <div class="hp-grid">
+    <!-- Colonne gauche -->
+    <div class="hp-left">
+      <div class="hp-kicker">La pièce phare</div>
+      <h2 class="hp-title" id="hp-heading">
+        <span>Le Sac</span><em> ModArt</em>
+      </h2>
+      <p class="hp-copy">
+       Conçu en cuir de champignon et en bois, il réinvente les codes avec une approche durable et innovante.
+Entre poésie organique et rigueur architecturale, le sac ModArt traduit l’ADN de la collection : l’élégance vivante, là où la forêt rencontre l’atelier.
+      </p>
+
+      <figure class="hp-photo tilt" data-tilt>
+        <img
+          src="https://www.dropbox.com/scl/fi/wcs2sgm5a92sihe45nskc/ChatGPT-Image-17-sept.-2025-16_35_26.png?rlkey=wch45nsbfo9x4uly5tt3u2uwu&st=wbifn7j3&raw=1"
+          alt="Sac à main ModArt – visuel éditorial">
+        <figcaption>SBA26 • Mycélium-inspired</figcaption>
+      </figure>
+    </div>
+
+    <!-- Colonne droite -->
+    <div class="hp-right">
+      <div class="hp-stage" id="hpStage">
+<model-viewer
+  src="https://c88w6athycyjuf8o.public.blob.vercel-storage.com/SAC%20A%CC%80%20MAIN.glb"
+  camera-controls
+  camera-orbit="180deg auto auto"
+  style="width:100%; height:100%; background:transparent;">
+</model-viewer>
+
+
+        <!-- Micro-interactions de scène -->
+        <div class="hp-spotlight" aria-hidden="true"></div>
+        <div class="hp-hint" id="hpHint" aria-hidden="true">Pivotez • Zoomez</div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- LOOKBOOK -->
 <section class="lookbook" id="lookbook">
@@ -163,7 +171,6 @@
   </div>
 </div>
 
-
 <div class="lookbook-visual">
   <img src="https://www.dropbox.com/scl/fi/sna36g4si4vhphdcw8sf6/ChatGPT-Image-16-sept.-2025-14_08_52.png?rlkey=pz087vu30dshhp40kk3pek4x7&st=0j183uyp&raw=1" 
        alt="Mannequin portant la collection" 
@@ -179,15 +186,41 @@
   <div class="lookbook-overlay" id="lookbookOverlay"></div>
 
 
-  <!-- Panneau latéral -->
-  <aside class="lookbook-panel" id="lookbookPanel">
-    <div class="panel-content">
-      <button class="close-panel" id="closePanel">&times;</button>
-      <h4 id="panelTitle"></h4>
-      <p id="panelDescription"></p>
-    </div>
-  </aside>
-</section>
+<aside class="lookbook-panel" id="lookbookPanel" aria-labelledby="panelTitle">
+  <button class="close-panel" id="closePanel" aria-label="Fermer">&times;</button>
+
+  <div class="panel-content">
+    <!-- Carte modèle façon photo -->
+    <figure class="panel-model" id="panelModelWrap">
+      <div class="panel-stage">
+        <model-viewer
+          id="panelModel"
+          src="https://c88w6athycyjuf8o.public.blob.vercel-storage.com/SAC%20A%CC%80%20MAIN.glb"
+          camera-controls
+          camera-orbit="180deg auto auto"
+          camera-target="auto"
+          shadow-intensity="1"
+          tone-mapping="neutral"
+          style="width:100%;height:100%;background:transparent;">
+        </model-viewer>
+      </div>
+      <figcaption class="panel-caption">
+        <span class="cap-left">SBA26</span>
+        <span class="cap-sep">•</span>
+        <span class="cap-right">MYCÉLIUM-INSPIRED</span>
+      </figcaption>
+    </figure>
+
+    <header class="panel-header">
+      <h4 id="panelTitle">Nom de la pièce</h4>
+    </header>
+
+    <p id="panelDescription" class="panel-desc">
+      Description de la pièce…
+    </p>
+  </div>
+</aside>
+
 
 
 <!-- INTRO -->

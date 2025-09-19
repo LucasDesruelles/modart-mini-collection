@@ -92,6 +92,7 @@ section.hero {
   max-width: 12ch;
 }
 
+
 .hero-links {
   display: flex;
   gap: 1rem;
@@ -254,14 +255,18 @@ section.collection {
   .collection-container {
     grid-template-columns: 1fr;
     gap: 2rem;
+    margin: 1rem 1rem;
   }
   .collection-title h2 {
-    font-size: 2.2rem;
+    font-size: 2rem;
   }
   .collection-bg {
     font-size: 16rem;
     bottom: -2rem;
   }
+  .collection-container p {
+    font-size: 0.8rem;
+}
 }
 
 
@@ -366,6 +371,8 @@ section.vid .story div {
   color: white;
   padding: 1rem;
   font-size: clamp(1.2rem, 2vw, 2.5rem);
+  font-family: var(--font-title,"Playfair Display",serif);
+  font-variant: all-small-caps;
 }
 
 section.vid .story h3 {
@@ -390,7 +397,7 @@ text-transform:uppercase;
   }
 
   section.vid .story div {
-    font-size: clamp(1rem, 4vw, 1.5rem);
+    font-size: clamp(0.8rem, 4vw, 1.5rem);
     padding: 0.5rem;
   }
   section.vid .story h3 {
@@ -663,64 +670,109 @@ section.lookbook {
   100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 }
 
-/* Panneau latéral */
+/* === Panel Lookbook – dark editorial === */
 .lookbook-panel {
   position: fixed;
   top: 0;
   right: -100%;
-  width: 400px;
+  width: 700px !important;                 /* ▲ panneau plus large */
   height: 100%;
-  background: var(--primary-color);
-  color: var(--secondary-color);
-  transition: right 0.4s ease;
+  background: var(--primary-color); /* noir */
+  color: var(--secondary-color);    /* blanc */
+  transition: right .45s ease;
   z-index: 50;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding: 2rem;
+  padding: 2.2rem 2rem;
+  overflow-y: auto;
+  border-left: 1px solid rgba(255,255,255,.08);
+}
+.lookbook-panel.active { right: 0; }
+
+.close-panel{
+  position:absolute;top:1rem;right:1rem;
+  background:none;border:0;color:var(--secondary-color);
+  font-size:2rem;cursor:pointer;line-height:1;
 }
 
-.lookbook-panel.active {
-  right: 0;
+.panel-content{ display:grid; gap:1.25rem; }
+
+/* ===== Cadre « photo » pour le modèle 3D ===== */
+.panel-model{
+  margin:0;
+  display:block;
+  border:1px solid rgba(255,255,255,.9);   /* fine bordure extérieure */
+  background:#0b0b0b;
 }
 
-.panel-content {
-  max-width: 100%;
+.panel-stage{
+  position:relative;
+  width:100%;
+  height:320px;                             /* hauteur de la « photo » */
+  background:transparent;
 }
 
-.panel-content h4 {
-  margin-top: 0;
-  color: var(--highlight-color);
+/* Nettoyage UI du model-viewer (modèle seul) */
+.panel-stage model-viewer{
+  width:100%;height:100%;
+  border:none!important;outline:none!important;background:transparent!important;
+}
+model-viewer::part(ar-button){ display:none!important; }
+#ar-prompt,.progress-bar{ display:none!important; }
+
+/* Légende séparée par une ligne, typographie magazine */
+.panel-caption{
+  display:flex;gap:.5rem;align-items:center;
+  padding:.7rem 1rem;
+  border-top:1px solid rgba(255,255,255,.9); /* ligne séparatrice */
+  font-family:var(--font-body, "Inter", sans-serif);
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-size:.95rem;                          /* fidèle à la réf */
+}
+.panel-caption .cap-sep{ opacity:.9; }
+.panel-caption .cap-right{ opacity:.95; }
+
+/* ===== Titre + description ===== */
+.panel-header h4{
+  margin:0;
+  font-family:var(--font-title,"Playfair Display",serif);
+  font-weight:700;
+  font-size:clamp(1.25rem,2.2vw,1.7rem);
+  line-height:1.15;
+  letter-spacing:.02em;
+  color:var(--secondary-color);
 }
 
-.close-panel {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  font-size: 2rem;
-  background: none;
-  border: none;
-  color: var(--secondary-color);
-  cursor: pointer;
+.panel-desc{
+  margin:0;
+  font-size:.92rem;         /* ▼ légèrement plus petite */
+  line-height:1.6;
+  color:rgba(255,255,255,.92);
 }
 
-/* === Overlay Lookbook === */
-.lookbook-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(255, 255, 255, 0.65); /* blanc semi-transparent */
-  backdrop-filter: blur(6px);             /* effet flouté */
-  -webkit-backdrop-filter: blur(6px);     /* compatibilité Safari */
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
-  z-index: 40; /* sous le panneau (.lookbook-panel) */
+/* === Overlay (inchangé) === */
+.lookbook-overlay{
+  position:fixed;inset:0;
+  background:rgba(255,255,255,.65);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  opacity:0;visibility:hidden;
+  transition:opacity .3s ease,visibility .3s ease;
+  z-index:40;
+}
+.lookbook-overlay.active{opacity:1;visibility:visible;}
+
+/* Responsive */
+@media (max-width:1024px){
+  .lookbook-panel{ width:100%; padding:2rem 1.25rem; }
+  .panel-stage{ height:44vh; }
+}
+@media (max-width:600px){
+  .panel-stage{ height:40vh; }
+  .panel-caption{ font-size:.88rem; }
+  .panel-desc{ font-size:.9rem; }
 }
 
-.lookbook-overlay.active {
-  opacity: 1;
-  visibility: visible;
-}
 
 
 /* === Hotspots avec lueur === */
@@ -779,7 +831,7 @@ section.lookbook {
 
   /* Panneau devient overlay plein écran */
   .lookbook-panel {
-    width: 100%;
+    width: 100% !important;
     right: -100%;
   }
 
@@ -1025,4 +1077,200 @@ model-viewer {
   model-viewer {
     height: 400px;
   }
+}
+
+/* Supprimer la bordure et le fond du conteneur */
+model-viewer {
+  border: none !important;
+  background: transparent !important;
+  outline: none !important;
+}
+
+/* Supprimer le bouton AR */
+model-viewer::part(ar-button) {
+  display: none !important;
+}
+
+/* Supprimer le prompt AR (main qui bouge) */
+#ar-prompt {
+  display: none !important;
+}
+
+/* Supprimer la barre de progression */
+.progress-bar {
+  display: none !important;
+}
+
+
+/* ========== LA PIÈCE PHARE ========== */
+.highlight-piece {
+  position: relative;
+  background: #fff;
+  padding: clamp(3rem, 6vw, 6rem) 2rem;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.highlight-piece .hp-bg {
+  position: absolute;
+  inset: auto -5vw -3rem auto;
+  font-family: var(--font-title, "Playfair Display", serif);
+  font-weight: 900;
+  font-size: 25rem;
+  line-height: 1;
+  color: rgba(0,0,0,0.04);
+  pointer-events: none;
+  user-select: none;
+  z-index: -1;
+}
+
+.hp-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: clamp(1.5rem, 4vw, 4rem);
+  align-items: center;
+}
+
+/* Colonne gauche */
+.hp-kicker {
+  font-family: var(--font-body, "Inter", sans-serif);
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  font-weight: 600;
+  font-size: .8rem;
+  margin-bottom: .75rem;
+  position: relative;
+}
+.hp-kicker::after {
+  content: "";
+  display: inline-block;
+  vertical-align: middle;
+  width: 3.5ch;
+  height: 1px;
+  background: #000;
+  margin-left: .8ch;
+}
+
+.hp-title {
+  font-family: var(--font-title, "Playfair Display", serif);
+  font-weight: 700;
+  letter-spacing: .02em;
+  font-variant: all-small-caps;
+  font-size: clamp(2.2rem, 5vw, 3.6rem);
+  line-height: 1.1;
+  margin-bottom: .75rem;
+}
+.hp-title span { letter-spacing: .06em; }
+.hp-title em   { font-style: italic; }
+
+.hp-copy {
+  font-family: var(--font-body, "Inter", sans-serif);
+  font-size: clamp(0.5rem, 1.2vw, 1.15rem);
+  line-height: 1.6;
+  max-width: 48ch;
+  color: #111;
+  margin-bottom: 1.5rem;
+}
+
+/* Photo avec tilt léger */
+.hp-photo {
+  margin: 0;
+  border: 1px solid #000;
+  overflow: hidden; /* pas de radius */
+  transform: translateY(20px);
+  opacity: 0;
+  transition: transform .7s ease, opacity .7s ease;
+}
+.hp-photo img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  transform: translateZ(0);
+}
+.hp-photo figcaption {
+  font-size: .8rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: .6rem .8rem;
+  border-top: 1px solid #000;
+  background: #fff;
+}
+
+/* Colonne droite : scène 3D */
+.hp-right {
+  min-height: min(70vh, 640px);
+}
+.hp-stage {
+  position: relative;
+  width: 100%;
+  height: min(70vh, 640px);
+  transition: background .2s ease;
+  transform: translateY(20px);
+  opacity: 0;
+  transition: transform .7s ease .1s, opacity .7s ease .1s;
+}
+
+/* Spotlight doux qui suit la souris */
+.hp-spotlight {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(240px 240px at var(--mx,50%) var(--my,50%), rgba(0,0,0,0.06), transparent 60%);
+  mix-blend-mode: multiply;
+  opacity: .8;
+}
+
+.hp-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 1rem;
+  transform: translateX(-50%);
+  font-family: var(--font-body, "Inter", sans-serif);
+  font-size: .8rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #000;
+  background: rgba(255,255,255,0.85);
+  padding: .35rem .6rem;
+  border: 1px solid #000;
+  pointer-events: none;
+  transition: opacity .35s ease;
+}
+
+/* Reveal au scroll */
+.highlight-piece.in-view .hp-photo,
+.highlight-piece.in-view .hp-stage {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Model-viewer : clean (uniquement le modèle) */
+model-viewer {
+  width: 100%;
+  height: 100%;
+  border: none !important;
+  background: transparent !important;
+  outline: none !important;
+}
+model-viewer::part(ar-button) { display: none !important; }
+#ar-prompt, .progress-bar { display: none !important; }
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .hp-grid {
+    grid-template-columns: 1fr;
+  }
+  .hp-right { min-height: 56vh; }
+  .hp-stage { height: 56vh; }
+}
+
+@media (pointer: coarse) {
+  /* Sur mobile/tactile : pas de spotlight dynamique */
+  .hp-spotlight { display: none; }
+  .hp-copy {
+  font-size: clamp(0.8rem, 1.2vw, 1.15rem)
+}
 }
