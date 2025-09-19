@@ -249,13 +249,9 @@ Entre poésie organique et rigueur architecturale, le sac Mycel Bag traduit l’
       <figcaption class="panel-caption">
         <span class="cap-left">SBA26</span>
         <span class="cap-sep">•</span>
-        <span class="cap-right">MYCÉLIUM-INSPIRED</span>
+        <span class="cap-right" id="panelCapRight"></span>
       </figcaption>
     </figure>
-
-    <header class="panel-header">
-      <h4 id="panelTitle">Nom de la pièce</h4>
-    </header>
 
     <p id="panelDescription" class="panel-desc">
       Description de la pièce…
@@ -263,27 +259,71 @@ Entre poésie organique et rigueur architecturale, le sac Mycel Bag traduit l’
   </div>
 </aside>
 
+</section>
 
+<section class="campus" id="campus" aria-labelledby="campusTitle">
+  <div class="campus-bg" aria-hidden="true"></div>
 
-<!-- INTRO -->
-<section class="intro">
-  <div class="intro-image">
-    <img src="https://www.dropbox.com/scl/fi/p56gxsfyecxawy9d36zrg/Images-Nos-Locaux-Lille-1.webp?rlkey=4wpa278vpq60zpi1vzvdl68mg&st=v0jasd7c&raw=1" alt="Image d'illustration" />
-  </div>
-  <div class="intro-text">
-    <p>
-      Chez Modart International, les étudiant·es sont au cœur de la création.
-Libres d’imaginer, d’expérimenter et de repousser les codes, ils donnent vie à des pièces uniques.
-Chaque défilé devient ainsi le reflet de leur talent, de leur vision et de leur audace. 
-    </p>
-    <p>
-      <a href="#" class="button">Découvrir le campus</a>
-    </p>
+  <div class="campus-inner">
+    <aside class="campus-card">
+      <h2 id="campusTitle">Le campus</h2>
+      <p>
+        Au cœur de la création, le campus ModArt réunit ateliers, studio et
+        espaces d’expérimentation. Un lieu de rencontres et d’idées, où les
+        talents croisent innovation, matières et savoir-faire.
+      </p>
+      <a class="campus-cta" href="https://www.modart.com" target="_blank" rel="noopener">
+        Visiter le site Modart
+      </a>
+    </aside>
   </div>
 </section>
 
 
-    <footer></footer>
+<footer class="site-footer" id="footer" aria-labelledby="footerTitle">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <h3 id="footerTitle">Modart</h3>
+      <p>Création, matières et savoir-faire. SBA26.</p>
+    </div>
+
+    <nav class="footer-nav" aria-label="Navigation pied de page">
+      <ul>
+        <li><a href="#collection">La Collection</a></li>
+        <li><a href="#highlight-piece">La pièce phare</a></li>
+        <li><a href="#lookbook">Lookbook</a></li>
+        <li><a href="#campus">Le Campus</a></li>
+      </ul>
+    </nav>
+
+    <div class="footer-news">
+      <p class="news-title">Newsletter</p>
+      <form class="news-form" id="newsForm" novalidate>
+        <input type="email" name="email" placeholder="Votre e-mail" aria-label="Votre e-mail" required>
+        <button type="submit">S’inscrire</button>
+      </form>
+      <p class="news-note">Des nouvelles éditoriales, sans spam.</p>
+    </div>
+
+    <div class="footer-social" aria-label="Réseaux sociaux">
+      <a href="https://www.instagram.com/modart___/" aria-label="Instagram">Instagram</a>
+      <a href="https://www.tiktok.com/@modart_international" aria-label="TikTok">TikTok</a>
+      <a href="https://www.linkedin.com/school/modart-international/?originalSubdomain=fr" aria-label="LinkedIn">LinkedIn</a>
+    </div>
+  </div>
+
+  <div class="footer-legal">
+    <p>© <span id="year"></span> ModArt — Tous droits réservés</p>
+    <ul>
+      <li><a href="#">Mentions légales</a></li>
+      <li><a href="#">Politique de confidentialité</a></li>
+      <li><a href="#">Cookies</a></li>
+    </ul>
+  </div>
+
+  <button class="back-to-top" id="backToTop" aria-label="Retour en haut">↑</button>
+</footer>
+
 
     <!-- Lenis pour scroll smooth -->
     <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.27/bundled/lenis.min.js"></script>

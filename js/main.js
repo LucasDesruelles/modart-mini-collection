@@ -101,14 +101,14 @@ requestAnimationFrame(raf);
 
 
 // === Lookbook Panel + Overlay + Model 3D ===
-const hotspots = document.querySelectorAll(".hotspot");
-const panel = document.getElementById("lookbookPanel");
-const overlay = document.getElementById("lookbookOverlay"); // déjà créé auparavant
-const closePanel = document.getElementById("closePanel");
+const hotspots        = document.querySelectorAll(".hotspot");
+const panel           = document.getElementById("lookbookPanel");
+const overlay         = document.getElementById("lookbookOverlay");
+const closePanelBtn   = document.getElementById("closePanel");
 
-const panelTitle = document.getElementById("panelTitle");
-const panelDescription = document.getElementById("panelDescription");
-const panelModel = document.getElementById("panelModel");
+const panelCapRight   = document.getElementById("panelCapRight"); // <- la légende à droite
+const panelDescription= document.getElementById("panelDescription");
+const panelModel      = document.getElementById("panelModel");
 
 // Même modèle pour chaque pièce (pour l’instant)
 const MODEL_URL = "https://c88w6athycyjuf8o.public.blob.vercel-storage.com/SAC%20A%CC%80%20MAIN.glb";
@@ -116,15 +116,18 @@ const MODEL_URL = "https://c88w6athycyjuf8o.public.blob.vercel-storage.com/SAC%2
 // Données pièces avec description + URL du modèle
 const itemsData = {
   "Béret en laine": {
-    desc: "Béret en laine mérinos, lignes nettes et finitions main. Pièce essentielle du vestiaire ModArt – SBA26.",
+    name: "Béret 'PARIS'",
+    desc: "Un béret à la française à la texture douce, inspiré du velouté et de la forme des champignons de Paris. Confortable et responsable, il coiffe la silhouette d’une touche intemporelle où la nature s’invite avec légèreté.",
     model: "https://c88w6athycyjuf8o.public.blob.vercel-storage.com/Beret.glb"
   },
   "Haut plissé beige": {
-    desc: "Top plissé en soie végétale, volume graphique et texture aérienne. Élégance minimaliste – SBA26.",
+    name: "Haut 'HYMÉNIUM'",
+    desc: "Inspiré de la girole, son col sculptural aux courbes organiques déploie une allure forestière et unique. En fibres issues du mycélium, il incarne la créativité vivante de la nature.",
     model: "https://c88w6athycyjuf8o.public.blob.vercel-storage.com/Haut.glb"
   },
   "Jupe en cuir marron": {
-    desc: "Jupe en cuir de champignon, taille haute, tombé structuré. Innovation durable – SBA26.",
+    name: "Jupe 'STIPE'",
+    desc: "Ses pans superposés évoquent les lamelles mystérieuses sous le chapeau des champignons. Fluide et innovante, cette jupe en cuir de champignon célèbre la croissance silencieuse du sous-bois.",
     model: "https://c88w6athycyjuf8o.public.blob.vercel-storage.com/Jupe.glb"
   }
 };
@@ -132,13 +135,13 @@ const itemsData = {
 
 hotspots.forEach(h => {
   h.addEventListener("click", () => {
-    const item = h.dataset.item;
-    const data = itemsData[item] || { desc: "Détails à venir.", model: null };
-
-    panelTitle.textContent = item || "Pièce";
-    panelDescription.textContent = data.desc;
-
-    // assigner le modèle 3D correspondant
+    const key  = h.dataset.item;                    // ex. "Haut plissé beige"
+    const data = itemsData[key] || {};
+    // Met le nom dans la légende
+    if (panelCapRight) panelCapRight.textContent = data.name || key || "—";
+    // Description
+    if (panelDescription) panelDescription.textContent = data.desc || "";
+    // Modèle 3D
     if (panelModel && data.model) {
       panelModel.setAttribute("src", data.model);
       panelModel.setAttribute("camera-orbit", "180deg auto auto");
@@ -146,23 +149,23 @@ hotspots.forEach(h => {
       panelModel.setAttribute("shadow-intensity", "1");
       panelModel.style.background = "transparent";
     }
-
+    // Ouvre
     panel.classList.add("active");
     overlay.classList.add("active");
   });
 });
 
-
-// Fermer panneau + overlay
+// fermeture (inchangé)
 function closeLookbook() {
   panel.classList.remove("active");
   overlay.classList.remove("active");
 }
-closePanel.addEventListener("click", closeLookbook);
+closePanelBtn.addEventListener("click", closeLookbook);
 overlay.addEventListener("click", closeLookbook);
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && panel.classList.contains("active")) closeLookbook();
 });
+
 
 // ===== Lookbook panel — micro interactions 3D stage =====
 (() => {
@@ -473,4 +476,58 @@ if (collectionSection) {
   window.addEventListener('resize', updateActive);
   updateActive();
 })();
+})();
+
+
+
+// === Le campus : reveal + parallax doux ===
+(() => {
+  const section = document.getElementById('campus');
+  if (!section) return;
+
+  const bg = section.querySelector('.campus-bg');
+
+  // Reveal
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) section.classList.add('in-view'); });
+  }, { threshold: 0.25 });
+  io.observe(section);
+
+  // Parallax léger (perf-safe)
+  function onScroll() {
+    const r = section.getBoundingClientRect();
+    // progress -1..1 autour du centre de section
+    const p = (r.top + r.height/2 - window.innerHeight/2) / window.innerHeight;
+    // translateY doux (ajuste l’amplitude si besoin)
+    const ty = Math.max(-30, Math.min(30, -p * 30));
+    bg.style.transform = `translateY(${ty}px)`;
+  }
+  document.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+
+
+// Footer — année courante + back to top
+(() => {
+  // Année
+  const y = document.getElementById('year');
+  if (y) y.textContent = new Date().getFullYear();
+
+  // Back to top
+  const btn = document.getElementById('backToTop');
+  if (!btn) return;
+
+  const toggleBtn = () => {
+    if (window.scrollY > window.innerHeight * 0.6) {
+      btn.classList.add('show');
+    } else {
+      btn.classList.remove('show');
+    }
+  };
+  window.addEventListener('scroll', toggleBtn, { passive: true });
+  toggleBtn();
+
+  btn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
 })();
