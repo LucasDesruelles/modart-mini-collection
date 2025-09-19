@@ -1404,20 +1404,8 @@ model-viewer::part(ar-button) { display: none !important; }
 /* Mobile : texte lisible à l’horizontale */
 @media (max-width: 768px) {
   .timeline-rail {
-    height: 180px;
-    width: 16px;
-    writing-mode: horizontal-tb;  /* ✅ horizontal sur mobile */
-    text-orientation: initial;
-    padding: 0 8px;
-    transform: translateY(-50%) translateX(0);
-  }
-  .timeline-rail::before {
-    margin-bottom: 0;
-    margin-right: 8px;            /* le point se place à gauche du texte */
-  }
-  .timeline-list {
-    min-width: 200px;
-    max-width: 240px;
+    height: 300px;
+
   }
 }
 

@@ -113,32 +113,34 @@ const panelModel = document.getElementById("panelModel");
 // Même modèle pour chaque pièce (pour l’instant)
 const MODEL_URL = "https://c88w6athycyjuf8o.public.blob.vercel-storage.com/SAC%20A%CC%80%20MAIN.glb";
 
-// Données pièces (exemples en FR)
+// Données pièces avec description + URL du modèle
 const itemsData = {
   "Béret en laine": {
-    desc: "Béret en laine mérinos, lignes nettes et finitions main. Pièce essentielle du vestiaire ModArt.",
+    desc: "Béret en laine mérinos, lignes nettes et finitions main. Pièce essentielle du vestiaire ModArt – SBA26.",
+    model: "https://c88w6athycyjuf8o.public.blob.vercel-storage.com/Beret.glb"
   },
   "Haut plissé beige": {
-    desc: "Top plissé en soie végétale, volume graphique et texture aérienne. Élégance minimaliste.",
+    desc: "Top plissé en soie végétale, volume graphique et texture aérienne. Élégance minimaliste – SBA26.",
+    model: "https://c88w6athycyjuf8o.public.blob.vercel-storage.com/Haut.glb"
   },
   "Jupe en cuir marron": {
-    desc: "Jupe en cuir de champignon, taille haute, tombé structuré. Innovation durable, caractère éditorial.",
+    desc: "Jupe en cuir de champignon, taille haute, tombé structuré. Innovation durable – SBA26.",
+    model: "https://c88w6athycyjuf8o.public.blob.vercel-storage.com/Jupe.glb"
   }
 };
 
-// Ouvrir le panneau
+
 hotspots.forEach(h => {
   h.addEventListener("click", () => {
     const item = h.dataset.item;
-    const data = itemsData[item] || { desc: "Détails à venir." };
+    const data = itemsData[item] || { desc: "Détails à venir.", model: null };
 
     panelTitle.textContent = item || "Pièce";
     panelDescription.textContent = data.desc;
 
-    // assigner / réassigner le modèle 3D
-    if (panelModel) {
-      // orientation initiale : on montre la face avant (ajuste au besoin)
-      panelModel.setAttribute("src", MODEL_URL);
+    // assigner le modèle 3D correspondant
+    if (panelModel && data.model) {
+      panelModel.setAttribute("src", data.model);
       panelModel.setAttribute("camera-orbit", "180deg auto auto");
       panelModel.setAttribute("camera-target", "auto");
       panelModel.setAttribute("shadow-intensity", "1");
@@ -149,6 +151,7 @@ hotspots.forEach(h => {
     overlay.classList.add("active");
   });
 });
+
 
 // Fermer panneau + overlay
 function closeLookbook() {
