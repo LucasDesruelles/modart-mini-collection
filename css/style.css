@@ -3,11 +3,6 @@
   box-sizing: border-box;
 }
 
-@font-face {
-  font-family: Satoshi;
-  src: url(Satoshi-Variable.ttf);
-}
-
 :root {
   --highlight-color: red;
   --primary-color: black;
@@ -85,11 +80,14 @@ section.hero {
 
 .hero-content {
   align-self: flex-start; /* le titre reste à gauche */
+  border-bottom: 2px solid white;
 }
 
 .hero-content h2 {
   font-size: 3rem;
   max-width: 12ch;
+  font-family: var(--font-title,"Playfair Display",serif);
+  
 }
 
 
@@ -135,6 +133,7 @@ section.hero {
   font-weight: 600;
   text-align: center;
   width: 100%;
+  text-align: left;
 }
 
 /* Effet hover */
@@ -146,6 +145,8 @@ section.hero {
 .hero-link:hover .overlay {
   opacity: 1;
 }
+
+
 
 /* Responsive */
 @media (max-width: 768px) {
@@ -162,6 +163,12 @@ section.hero {
     opacity: 1;
     background: rgba(0,0,0,0.3);
   }
+  .hero-content h2 {
+  font-size: 2rem;
+  max-width: 12ch;
+  font-family: var(--font-title,"Playfair Display",serif);
+  
+}
 }
 
 /* === Section Collection === */
@@ -187,7 +194,7 @@ section.collection {
 
 .collection-container {
   display: grid;
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: 2fr 2fr;
   gap: 4rem;
   max-width: 1200px;
   margin: 0 auto;
@@ -196,6 +203,7 @@ section.collection {
 
 .collection-title h2 {
   font-size: 3rem;
+  font-family: var(--font-title,"Playfair Display",serif);
   font-variant: all-small-caps;
   letter-spacing: 0.08em;
   line-height: 1.1;
@@ -217,8 +225,7 @@ section.collection {
 
 .collection-text p {
   margin-bottom: 1.2rem;
-  font-size: 1.1rem;
-  line-height: 1.6;
+  font-size: 0.8rem;
 }
 .collection-text span {
   font-weight: 600;
@@ -377,6 +384,7 @@ section.vid .story div {
 
 section.vid .story h3 {
 text-transform:uppercase;
+font-size: 3rem;
 }
 
 /* --- Responsive --- */
@@ -465,7 +473,7 @@ section.lookbook {
 .lookbook-intro {
   background: var(--primary-color);
   color: var(--secondary-color);
-  padding: 3rem;
+  padding: 2rem;
   display: flex;
   flex-direction: column;
   justify-content: flex-start; /* titre en haut */
@@ -497,13 +505,13 @@ section.lookbook {
 }
 
 .lookbook-intro h3 {
-  font-size: 2rem;
+  font-size: 3rem;
   margin-bottom: 1rem;
+    font-family: var(--font-title,"Playfair Display",serif);
 }
 
 .lookbook-intro p {
-  font-size: 0.9rem;
-  line-height: 1.5;
+  font-size: 0.8rem;
   max-width: 28ch;
 }
 
@@ -529,9 +537,9 @@ section.lookbook {
 }
 
 .lookbook-extra blockquote {
-  font-size: 0.9rem;
+  font-size: 0.7rem;
   font-style: italic;
-  margin: 0 0 0.75rem 0;
+  margin: 0 0 1rem 0;
   padding-left: 1rem;
   opacity: 0.9;
 }
@@ -943,8 +951,9 @@ section.jeu {
 .jeu-card h3 {
   margin: 0;
   font-size: 2rem;
-  font-variant: all-small-caps;
   letter-spacing: .08em;
+    font-family: var(--font-title,"Playfair Display",serif);
+
 }
 .close-card {
   background: none;
@@ -1143,6 +1152,15 @@ model-viewer::part(ar-button) {
   margin-bottom: .75rem;
   position: relative;
 }
+.lookbook .hp-kicker::after {
+  content: "";
+  display: inline-block;
+  vertical-align: middle;
+  width: 3.5ch;
+  height: 1px;
+  background: white;
+  margin-left: .8ch;
+}
 .hp-kicker::after {
   content: "";
   display: inline-block;
@@ -1273,4 +1291,237 @@ model-viewer::part(ar-button) { display: none !important; }
   .hp-copy {
   font-size: clamp(0.8rem, 1.2vw, 1.15rem)
 }
+}
+
+
+
+/* ===== Timeline latérale (gauche) ===== */
+.timeline {
+  position: fixed;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1300; /* au-dessus du contenu */
+  pointer-events: none; /* par défaut, rien ne bloque sauf le rail/panneau */
+}
+
+/* Conteneur timeline (inchangé) */
+.timeline {
+  position: fixed;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1300;
+  pointer-events: none; /* on réactive sur les enfants ciblés */
+}
+
+/* BOUTON RAIL — texte directement dessus */
+.timeline-rail {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%) rotate(180deg);
+  /* dimensions */
+  width: 30px;           /* rail fin */
+  height: 40vh;
+  /* style */
+  background: #000;
+  color: #fff;
+  border: 1px solid #000;
+  box-shadow: 0 12px 36px rgba(0,0,0,.18);
+  /* texte vertical propre + centrage parfait */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 0;
+  font-family: var(--font-body,"Inter",sans-serif);
+  font-weight: 700;
+  font-size: .72rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  line-height: 1;
+  writing-mode: vertical-rl;  /* ✅ vertical natif */
+  text-orientation: mixed;
+  /* interactivité */
+  cursor: pointer;
+  pointer-events: auto;
+  opacity: .82;
+  transition: opacity .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+
+/* petit “pulse” discret pour l’affordance (au-dessus du texte) */
+.timeline-rail::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 0;            /* pas d’arrondi selon ta DA */
+  background: #fff;
+  border: 1px solid #000;
+  margin-bottom: 8px;          /* espace par rapport au texte (vertical) */
+  animation: tlPulse 1.8s ease-in-out infinite;
+}
+@keyframes tlPulse {
+  0%, 100% { transform: scale(1); opacity: .7; }
+  50%      { transform: scale(1.6); opacity: 1; }
+}
+
+.timeline-rail:hover,
+.timeline.open .timeline-rail {
+  opacity: 1;
+  box-shadow: 0 16px 48px rgba(0,0,0,.24);
+}
+
+/* Panneau (inchangé, assure-toi d’avoir pointer-events:auto) */
+.timeline-list {
+  list-style: none;
+  margin: 0;
+  padding: 1rem 1rem 1rem 1.25rem;
+  position: relative;
+  left: 14px;                 /* collé au rail */
+  min-width: 220px;
+  max-width: 280px;
+  background: rgba(255,255,255,.86);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid #000;
+  box-shadow: 0 20px 60px rgba(0,0,0,.15);
+  pointer-events: auto;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(-8px);
+  transition: opacity .25s ease, visibility .25s ease, transform .25s ease;
+}
+.timeline:hover .timeline-list,
+.timeline.open .timeline-list {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+}
+
+/* Actif : carré noir (inchangé) */
+.tl-item.active .tl-dot { background: #000; }
+
+/* Mobile : texte lisible à l’horizontale */
+@media (max-width: 768px) {
+  .timeline-rail {
+    height: 180px;
+    width: 16px;
+    writing-mode: horizontal-tb;  /* ✅ horizontal sur mobile */
+    text-orientation: initial;
+    padding: 0 8px;
+    transform: translateY(-50%) translateX(0);
+  }
+  .timeline-rail::before {
+    margin-bottom: 0;
+    margin-right: 8px;            /* le point se place à gauche du texte */
+  }
+  .timeline-list {
+    min-width: 200px;
+    max-width: 240px;
+  }
+}
+
+
+/* Panneau qui se révèle */
+.timeline-list {
+  list-style: none;
+  margin: 0;
+  padding: 1rem 1rem 1rem 1.25rem;
+  position: relative;
+  left: 12px;                 /* collé au rail */
+  min-width: 220px;
+  max-width: 280px;
+  background: rgba(255,255,255,.86);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid #000;
+  box-shadow: 0 20px 60px rgba(0,0,0,.15);
+  pointer-events: auto;
+  opacity: 0; visibility: hidden;
+  transform: translateX(-8px);
+  transition: opacity .25s ease, visibility .25s ease, transform .25s ease;
+}
+
+/* Ligne verticale décorative à l’intérieur du panneau */
+.timeline-list::before {
+  content: "";
+  position: absolute;
+  left: 14px;
+  top: 12px;
+  bottom: 12px;
+  width: 1px;
+  background: #000;
+  opacity: .9;
+}
+
+/* État ouvert (hover desktop, .open mobile/clavier) */
+.timeline:hover .timeline-list,
+.timeline.open .timeline-list {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+}
+
+/* Items */
+.tl-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 16px 1fr;
+  align-items: start;
+  gap: .75rem;
+  padding: .5rem 0 .75rem 0;
+  cursor: pointer;
+}
+.tl-item:not(:last-child) { margin-bottom: .25rem; }
+
+/* Point + connexion à la ligne */
+.tl-dot {
+  position: relative;
+  width: 12px;
+  height: 12px;
+  border: 2px solid #000;
+  background: #fff;
+  transform: translateX(1px);
+}
+.tl-item.active .tl-dot {
+  background: #000;
+}
+
+/* Libellé */
+.tl-label {
+  margin-top: -2px;
+  max-width: 16ch;
+}
+.tl-label strong {
+  display: block;
+  font-family: var(--font-title, "Playfair Display", serif);
+  font-weight: 700;
+  letter-spacing: .02em;
+  line-height: 1.1;
+  font-size: 1rem;
+  color: #000;
+}
+.tl-label em {
+  display: block;
+  font-family: var(--font-body, "Inter", sans-serif);
+  font-style: italic;
+  font-size: .78rem;
+  color: #222;
+  opacity: .85;
+  margin-top: .15rem;
+}
+
+/* Thème sombre derrière (si section dark), on s’assure de rester lisible */
+@media (prefers-color-scheme: dark) {
+  .timeline-list {
+    background: rgba(255,255,255,.90);
+  }
+}
+
+/* Mobile : panneau un peu plus compact et rail plus haut */
+@media (max-width: 768px) {
+  .timeline-rail { height: 160px; width: 14px; }
+  .timeline-list { min-width: 200px; max-width: 240px; }
+  .tl-label strong { font-size: .95rem; }
+  .tl-label em { font-size: .76rem; }
 }

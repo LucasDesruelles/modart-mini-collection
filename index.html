@@ -11,22 +11,62 @@
     <title>ModArt</title>
     <link rel="stylesheet" href="./css/style.css" />
   </head>
+  <!-- Timeline latérale -->
+<nav class="timeline" aria-label="Navigation des sections">
+  <!-- Rail toujours visible -->
+  <button class="timeline-rail" aria-label="Navigation rapide" aria-expanded="false" title="Navigation rapide">
+    Navigation rapide
+  </button>
+
+  <!-- Panneau -->
+  <ol class="timeline-list">
+    <li class="tl-item" data-target="#collection">
+      <span class="tl-dot" aria-hidden="true"></span>
+      <span class="tl-label">
+        <strong>La Collection</strong>
+        <em>Sous-bois de l’âme</em>
+      </span>
+    </li>
+    <li class="tl-item" data-target="#highlight-piece">
+      <span class="tl-dot" aria-hidden="true"></span>
+      <span class="tl-label">
+        <strong>La pièce phare</strong>
+        <em>Le sac manifeste</em>
+      </span>
+    </li>
+    <li class="tl-item" data-target="#lookbook">
+      <span class="tl-dot" aria-hidden="true"></span>
+      <span class="tl-label">
+        <strong>Lookbook</strong>
+        <em>Vue d’ensemble</em>
+      </span>
+    </li>
+    <li class="tl-item" data-target="#campus">
+      <span class="tl-dot" aria-hidden="true"></span>
+      <span class="tl-label">
+        <strong>Le campus</strong>
+        <em>À venir</em>
+      </span>
+    </li>
+  </ol>
+</nav>
+
   <body>
 
     <!-- HERO SECTION -->
     <section class="hero">
       <div class="hero-content">
-        <h2>SOUS BOIS DE L'ÂME</h2>
+        <h2>SOUS BOIS </br><em>DE L'ÂME</em></h2>
       </div>
       <div class="hero-links">
   <a href="#concours" class="hero-link">
- <img src="https://www.dropbox.com/scl/fi/mgkvs74er1r0akzdmytvo/ChatGPT-Image-16-sept.-2025-15_43_10.png?rlkey=8dpiswf2sxnxgdia5iplj5puh&st=m9lh46yk&raw=1" alt="Lien vers section 1" />
+ <img src="https://www.dropbox.com/scl/fi/ans070i4nmijtyu0fikzn/ChatGPT-Image-19-sept.-2025-11_16_12.jpg?rlkey=1y4fbyms0nmlsfsol4qnrnh18&st=wav2dzie&raw=1" alt="Lien vers section 1" />
     <div class="overlay">
-      <span>JEU CONCOURS</span>
+      <span>LA PIÈCE PHARE</span>
     </div>
   </a>
   <a href="#lookbook" class="hero-link">
-   <img src="https://www.dropbox.com/scl/fi/cxxswcwm72g74tkikcacg/ChatGPT-Image-16-sept.-2025-14_08_50.png?rlkey=fuyhq8bmv2ol4l1yxtb2cqdfd&st=dabw7at0&raw=1" alt="Lien vers section 2" />
+   <img src="https://www.dropbox.com/scl/fi/u3jkefrph103y3gznf8zy/ChatGPT-Image-19-sept.-2025-11_16_fghjkl12.jpg?rlkey=mtn60uj3is2g1udf8ru9h67s6&st=andj7l9c&raw=1" alt="Lien vers section 2" />
     <div class="overlay">
       <span>LOOKBOOK</span>
     </div>
@@ -37,7 +77,7 @@
 <section class="jeu" id="concours" aria-label="Jeu concours ModArt">
   <!-- Pastille flottante (losange) -->
  <button class="jeu-floating is-hidden" id="jeuFloating" aria-haspopup="dialog" aria-controls="jeuCard">
-  <span>Jeu</span>
+  <span>JEU</span>
 </button>
 
   <!-- Overlay blanc floutant -->
@@ -46,11 +86,11 @@
   <!-- Carte concours -->
   <div class="jeu-card" id="jeuCard" role="dialog" aria-modal="true" aria-labelledby="jeuTitle" aria-hidden="true">
     <div class="jeu-card-head">
-      <h3 id="jeuTitle">Jeu Concours</h3>
+      <h3 id="jeuTitle">JEU CONCOURS</h3>
       <button class="close-card" id="closeCard" aria-label="Fermer">×</button>
     </div>
     <p class="jeu-card-desc">
-      Tente de remporter une pièce exclusive de la collection <strong>FW25</strong>.
+      Tentez de remporter 2 places pour le défilé <strong>SBA26</strong>.
     </p>
     <form id="jeuForm" class="jeu-form" novalidate>
       <label for="jc_name">Nom Prénom</label>
@@ -59,7 +99,7 @@
       <label for="jc_email">Email</label>
       <input type="email" id="jc_email" name="email" required>
 
-      <label for="jc_pref">Ta pièce préférée de la FW25</label>
+      <label for="jc_pref">Votre pièce préférée de la SBA26</label>
       <input type="text" id="jc_pref" name="pref" required>
 
       <button type="submit" class="jeu-submit">Je participe</button>
@@ -74,11 +114,13 @@
   <div class="collection-bg">26</div>
   <div class="collection-container">
     <div class="collection-title">
+    <div class="hp-kicker">Sous-bois de l'Âme</div> 
       <h2>LA COLLECTION</h2>
     </div>
     <div class="collection-text card">
-      <p>
-        <span>Sous-bois de l’âme</span> est une collection inspirée des champignons, 
+ 
+     
+      <p>Une collection inspirée des champignons, 
         entre poésie naturelle et innovation durable.  
       </p>
       <p>
@@ -122,18 +164,18 @@
     <div class="hp-left">
       <div class="hp-kicker">La pièce phare</div>
       <h2 class="hp-title" id="hp-heading">
-        <span>Le Sac</span><em> ModArt</em>
+        <span>Le Mycel</span><em> Bag</em>
       </h2>
       <p class="hp-copy">
        Conçu en cuir de champignon et en bois, il réinvente les codes avec une approche durable et innovante.
-Entre poésie organique et rigueur architecturale, le sac ModArt traduit l’ADN de la collection : l’élégance vivante, là où la forêt rencontre l’atelier.
+Entre poésie organique et rigueur architecturale, le sac Mycel Bag traduit l’ADN de la collection : l’élégance vivante, là où la forêt rencontre l’atelier.
       </p>
 
       <figure class="hp-photo tilt" data-tilt>
         <img
           src="https://www.dropbox.com/scl/fi/wcs2sgm5a92sihe45nskc/ChatGPT-Image-17-sept.-2025-16_35_26.png?rlkey=wch45nsbfo9x4uly5tt3u2uwu&st=wbifn7j3&raw=1"
           alt="Sac à main ModArt – visuel éditorial">
-        <figcaption>SBA26 • Mycélium-inspired</figcaption>
+        <figcaption>SBA26 • Made with <em>NATURE</em></figcaption>
       </figure>
     </div>
 
@@ -159,14 +201,14 @@ Entre poésie organique et rigueur architecturale, le sac ModArt traduit l’ADN
 <!-- LOOKBOOK -->
 <section class="lookbook" id="lookbook">
 <div class="lookbook-intro">
-  <h3>Lookbook</h3>
-  <p>
-    Découvre toutes les pièces de la collection. Clique sur un vêtement porté par le mannequin 
+          <div class="hp-kicker">DÉCOUVREZ TOUTES LES PIÈCES DE LA COLLECTION.</div>
+  <h3>LOOKBOOK</h3>
+  <p>Cliquez sur un vêtement porté par le mannequin 
     pour en savoir plus sur chaque détail.
   </p>
 
   <div class="lookbook-extra">
-    <blockquote>« La mode se vit dans le détail. »</blockquote>
+    <blockquote>« Rien ne disparaît vraiment : dans la nature comme dans la mode, tout se réinvente. »</blockquote>
     <span class="season">Collection SBA26</span>
   </div>
 </div>

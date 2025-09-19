@@ -1,9 +1,9 @@
 const canvas = document.getElementById("sequence");
 const context = canvas.getContext("2d");
 
-const frameCount = 137;
+const frameCount = 140;
 const currentFrame = (i) =>
-  `./assets/sequence/frame${i.toString().padStart(3, "0")}.png`;
+  `./assets/sequence/frame${i.toString().padStart(3, "0")}.jpg`;
 
 const images = [];
 let currentImageIndex = 0;
@@ -59,10 +59,14 @@ window.addEventListener("scroll", () => {
   let progress = (window.scrollY - vidSection.offsetTop) / sectionHeight;
   progress = Math.min(Math.max(progress, 0), 1);
 
-  // --- scale de 1 à 0.5 ---
-  const minScale = 0.5;
-  const scale = 1 - (1 - minScale) * progress;
-  canvas.style.transform = `scale(${scale})`;
+// --- scale de 1 à 0.5 --- (uniquement desktop)
+let scale = 1;
+if (window.innerWidth > 768) {
+  const minScale = 0.7;
+  scale = 1 - (1 - minScale) * progress;
+}
+canvas.style.transform = `scale(${scale})`;
+
 
   // --- frame index ---
   const frameIndex = Math.min(
@@ -351,3 +355,119 @@ if (collectionSection) {
 })();
 
 
+// ===== Timeline latérale =====
+(() => {
+  const timeline = document.querySelector('.timeline');
+  if (!timeline) return;
+
+  const rail  = timeline.querySelector('.timeline-rail');
+  const items = [...timeline.querySelectorAll('.tl-item')];
+
+  // Toggle pour mobile / clavier (hover n'existe pas)
+  let closeTimer;
+  function openTimeline() {
+    timeline.classList.add('open');
+    clearTimeout(closeTimer);
+    // auto-close après 4s d'inactivité (mobile)
+    closeTimer = setTimeout(() => timeline.classList.remove('open'), 4000);
+  }
+  function closeTimeline() {
+    timeline.classList.remove('open');
+    clearTimeout(closeTimer);
+  }
+
+  rail.addEventListener('click', (e) => {
+    e.stopPropagation();
+    // toggle
+    if (timeline.classList.contains('open')) closeTimeline();
+    else openTimeline();
+  });
+  document.addEventListener('click', (e) => {
+    if (!timeline.contains(e.target)) closeTimeline();
+  });
+
+  // Scroll doux vers la section
+  function scrollToTarget(sel) {
+    const el = document.querySelector(sel);
+    if (!el) return;
+    const top = el.getBoundingClientRect().top + window.scrollY - 24; // petit offset
+    window.scrollTo({ top, behavior: 'smooth' });
+  }
+
+  items.forEach(li => {
+    li.addEventListener('click', () => {
+      const target = li.getAttribute('data-target');
+      if (target) scrollToTarget(target);
+      // sur mobile, on peut refermer après navigation
+      closeTimeline();
+    });
+  });
+
+ // ===== Timeline: scrollspy robuste =====
+(() => {
+  const timeline = document.querySelector('.timeline');
+  if (!timeline) return;
+
+  const rail  = timeline.querySelector('.timeline-rail');
+  const items = [...timeline.querySelectorAll('.tl-item')];
+  const targets = ['collection','highlight-piece','lookbook','campus']
+    .map(id => document.getElementById(id))
+    .filter(Boolean);
+
+  // toggle .open (mobile), maj aria-expanded
+  let closeTimer;
+  const openTimeline = () => {
+    timeline.classList.add('open');
+    rail?.setAttribute('aria-expanded','true');
+    clearTimeout(closeTimer);
+    closeTimer = setTimeout(() => closeTimeline(), 4000);
+  };
+  const closeTimeline = () => {
+    timeline.classList.remove('open');
+    rail?.setAttribute('aria-expanded','false');
+    clearTimeout(closeTimer);
+  };
+
+  rail?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (timeline.classList.contains('open')) closeTimeline(); else openTimeline();
+  });
+  document.addEventListener('click', (e) => { if (!timeline.contains(e.target)) closeTimeline(); });
+
+  // navigation au clic
+  const map = new Map(items.map(li => [li.getAttribute('data-target'), li]));
+  items.forEach(li => li.addEventListener('click', () => {
+    const sel = li.getAttribute('data-target');
+    const el = sel ? document.querySelector(sel) : null;
+    if (!el) return;
+    const top = el.getBoundingClientRect().top + window.scrollY - 24;
+    window.scrollTo({ top, behavior: 'smooth' });
+    // feedback actif immédiat
+    items.forEach(i => i.classList.remove('active'));
+    li.classList.add('active');
+    closeTimeline();
+  }));
+
+  // --- Nouveau scrollspy : on marque actif la section la plus proche d’une ligne guide (30% viewport)
+  const GUIDE = 0.30; // 30% de la hauteur de viewport
+  function updateActive() {
+    const guideY = window.innerHeight * GUIDE;
+    let best = null, bestDist = Infinity;
+
+    targets.forEach(sec => {
+      const r = sec.getBoundingClientRect();
+      const dist = Math.abs(r.top - guideY);
+      if (dist < bestDist) { best = sec; bestDist = dist; }
+    });
+
+    if (!best) return;
+    const key = '#' + best.id;
+    items.forEach(i => i.classList.toggle('active', i.getAttribute('data-target') === key));
+  }
+
+  // écouteurs
+  document.addEventListener('scroll', updateActive, { passive: true });
+  window.addEventListener('resize', updateActive);
+  updateActive();
+})();
+})();
